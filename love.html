@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Я люблю тебя!!!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <style>
+    :root{
+      --glass: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.35);
+      --text:#fff;
+      --muted:#ffe1ee;
+      --accent:#ffeb3b;
+
+      --safe-top: env(safe-area-inset-top);
+      --safe-right: env(safe-area-inset-right);
+      --safe-bottom: env(safe-area-inset-bottom);
+      --safe-left: env(safe-area-inset-left);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html { height: 100%; }
+    body{
+      min-height:100dvh;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% 10%, rgba(255, 255, 255, 0.14), transparent 55%),
+        radial-gradient(900px 500px at 85% 20%, rgba(255, 235, 59, 0.18), transparent 52%),
+        radial-gradient(circle at top, #ffbfd5, #ff5c8d 35%, #3b0621 100%);
+      overflow-x:hidden;
+      overflow-y:auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:
+        max(22px, var(--safe-top))
+        max(16px, var(--safe-right))
+        max(22px, var(--safe-bottom))
+        max(16px, var(--safe-left));
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .blob{
+      position:fixed;
+      width:420px;height:420px;
+      border-radius:50%;
+      filter: blur(40px);
+      opacity:.45;
+      z-index:0;
+      animation: drift 10s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    .b1{left:-120px; top:-120px; background: #ff4f87;}
+    .b2{right:-140px; bottom:-140px; background: #7c4dff; animation-duration: 12s;}
+    @keyframes drift{ from{transform:translate(0,0)} to{transform:translate(40px,30px)} }
+
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      opacity:.75;
+    }
+    .h{
+      position:absolute;
+      width:14px;height:14px;
+      background:#ff8fb3;
+      transform:rotate(45deg);
+      animation: float 9s linear infinite;
+    }
+    .h::before,.h::after{
+      content:"";
+      position:absolute;
+      width:14px;height:14px;
+      background:#ff8fb3;
+      border-radius:50%;
+    }
+    .h::before{top:-7px;left:0}
+    .h::after{left:-7px;top:0}
+    .h:nth-child(1){left:8%;  animation-delay:0s}
+    .h:nth-child(2){left:22%; animation-delay:1s; animation-duration:11s}
+    .h:nth-child(3){left:38%; animation-delay:2s; animation-duration:8s}
+    .h:nth-child(4){left:55%; animation-delay:.5s; animation-duration:10s}
+    .h:nth-child(5){left:70%; animation-delay:1.2s; animation-duration:12s}
+    .h:nth-child(6){left:84%; animation-delay:2.2s; animation-duration:9s}
+    .h:nth-child(7){left:93%; animation-delay:1.6s; animation-duration:13s}
+    @keyframes float{
+      0%{transform:translateY(105vh) rotate(45deg); opacity:0}
+      10%{opacity:.9}
+      100%{transform:translateY(-20vh) rotate(45deg); opacity:0}
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      width:min(860px, 100%);
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+    }
+
+    .panel{
+      background:var(--glass);
+      border:1px solid var(--stroke);
+      border-radius:24px;
+      padding: clamp(18px, 4.6vw, 22px) clamp(16px, 4vw, 20px);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+
+    .tag{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:6px 12px;
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    .dot{
+      width:6px;height:6px;border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 10px var(--accent);
+    }
+
+    h1{ font-size: clamp(26px, 6.5vw, 34px); line-height:1.08; margin-bottom:10px; }
+    .sub{ color:var(--muted); font-size: clamp(13px, 3.8vw, 15px); margin-bottom:14px; }
+
+    .love-box{
+      margin-top:12px;
+      border-radius:18px;
+      background: rgba(0,0,0,.22);
+      padding:14px 14px 16px;
+      color: var(--muted);
+      font-size: clamp(13px, 3.6vw, 14px);
+    }
+    .love-box b{ color: var(--accent); font-weight:700; }
+
+    .actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding: 11px 16px;
+      min-height: 44px;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      user-select:none;
+      white-space:nowrap;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .btn-main{
+      background:#ff356f;
+      color:#fff;
+      box-shadow: 0 14px 34px rgba(0,0,0,.45);
+    }
+    .btn-ghost{
+      background: transparent;
+      color: var(--muted);
+      border:1px solid rgba(255,255,255,.35);
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+      .btn-main:hover{ transform: translateY(-2px); box-shadow: 0 18px 44px rgba(0,0,0,.6); }
+      .btn-ghost:hover{ background: rgba(0,0,0,.18); transform: translateY(-1px); }
+    }
+
+    .cats{
+      display:grid;
+      gap:14px;
+      align-content:start;
+    }
+
+    .cat-card{
+      display:flex;
+      gap: 22px;
+      align-items:center;
+      justify-content:center;
+      padding: 20px 18px;
+      border-radius:22px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.12);
+      position:relative;
+      overflow:hidden;
+      animation: appear .25s ease-out;
+    }
+
+    @keyframes appear {
+      from { transform: translateY(6px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .cat{ width:120px; height:90px; position:relative; filter: drop-shadow(0 16px 30px rgba(0,0,0,.35)); flex: 0 0 auto; }
+    .head{ width:78px;height:58px; background:#ffe6ef; border-radius:18px; position:absolute; left:18px; top:18px; box-shadow: inset 0 -6px 0 rgba(0,0,0,.04); }
+    .ear{ width:26px;height:26px; background:#ffe6ef; position:absolute; top:8px; border-radius:6px; transform: rotate(45deg); box-shadow: inset 0 -4px 0 rgba(0,0,0,.04); }
+    .ear.l{ left:14px; } .ear.r{ right:14px; }
+    .face{ position:absolute; inset:0; }
+    .eye{ width:10px;height:10px; background:#2b1b2f; border-radius:50%; position:absolute; top:26px; }
+    .eye.l{ left:22px; } .eye.r{ right:22px; }
+    .nose{ width:10px;height:8px; background:#ff6f9a; border-radius:6px; position:absolute; left:50%; top:34px; transform: translateX(-50%); }
+    .whisk{ position:absolute; top:38px; width:24px;height:2px; background: rgba(43,27,47,.55); border-radius:999px; }
+    .w1{ left:6px; transform: rotate(8deg); } .w2{ left:6px; top:44px; transform: rotate(-6deg); }
+    .w3{ right:6px; transform: rotate(-8deg); } .w4{ right:6px; top:44px; transform: rotate(6deg); }
+
+    .paw{ width:18px;height:14px; background:#ffe6ef; border-radius:8px; position:absolute; bottom:6px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.04); animation: wave 1.6s ease-in-out infinite; transform-origin: 50% 100%; }
+    .paw.l{ left:28px; } .paw.r{ right:28px; animation-delay:.2s; }
+    @keyframes wave{ 0%,100%{ transform: rotate(0deg) translateY(0); } 50%{ transform: rotate(10deg) translateY(-2px); } }
+
+    .tiny-heart{ width:14px;height:14px; background:#ff2f6b; position:absolute; right:10px; top:10px; transform: rotate(45deg); animation: pop 1.2s ease-in-out infinite; opacity:.9; }
+    .tiny-heart::before,.tiny-heart::after{ content:""; position:absolute; width:14px;height:14px; background: inherit; border-radius:50%; }
+    .tiny-heart::before{ top:-7px; left:0; } .tiny-heart::after{ left:-7px; top:0; }
+    @keyframes pop{ 0%,100%{ transform: rotate(45deg) scale(1); } 50%{ transform: rotate(45deg) scale(1.18); } }
+
+    .cat-text{ text-align:left; max-width: 240px; }
+    .cat-text .t1{ font-weight:800; font-size:16px; margin-bottom:6px; }
+    .cat-text .t2{ color: var(--muted); font-size:13px; line-height:1.35; }
+
+    @media (max-width: 840px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .cat-card{ animation:none; }
+      .paw, .tiny-heart { animation:none; }
+      .h { animation:none; }
+      .blob { animation:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+
+  <div class="hearts">
+    <div class="h"></div><div class="h"></div><div class="h"></div><div class="h"></div>
+    <div class="h"></div><div class="h"></div><div class="h"></div>
+  </div>
+
+  <main class="wrap">
+    <section class="panel">
+      <div class="tag"><span class="dot"></span><span>Ответ получен</span><span>•</span><span>счастье</span></div>
+      <h1>Я люблю тебя</h1>
+      <div class="sub">И каждый день рядом с тобой — мой любимый праздник.</div>
+
+      <div class="love-box">
+        <b>Ты — мой САМЫЙ ЛЮБИМЫЙ человек.</b> Спасибо, что ты есть.
+        Я хочу обнимать тебя чаще, смеяться с тобой громче и делать тебя счастливее каждый день.
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-main" href="valentine.html">💌 Вернуться к валентинке</a>
+        <button class="btn btn-ghost" type="button" id="moreCatsBtn">🐾 Ещё котиков</button>
+      </div>
+    </section>
+
+    <aside class="panel cats" id="cats" aria-label="Котики">
+      <!-- стартовые котики (оставь как у тебя) -->
+      <div class="cat-card">
+        <div class="cat">
+          <div class="head">
+            <div class="ear l"></div><div class="ear r"></div>
+            <div class="face">
+              <div class="eye l"></div><div class="eye r"></div>
+              <div class="nose"></div>
+              <div class="whisk w1"></div><div class="whisk w2"></div><div class="whisk w3"></div><div class="whisk w4"></div>
+            </div>
+          </div>
+          <div class="paw l"></div><div class="paw r"></div>
+          <div class="tiny-heart"></div>
+        </div>
+        <div class="cat-text">
+          <div class="t1">Котик №1</div>
+          <div class="t2">Передаёт тебе “мяу” и немного любви в сердечке.</div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat">
+          <div class="head" style="background:#fff2d6;">
+            <div class="ear l" style="background:#fff2d6;"></div><div class="ear r" style="background:#fff2d6;"></div>
+            <div class="face">
+              <div class="eye l"></div><div class="eye r"></div>
+              <div class="nose"></div>
+              <div class="whisk w1"></div><div class="whisk w2"></div><div class="whisk w3"></div><div class="whisk w4"></div>
+            </div>
+          </div>
+          <div class="paw l" style="background:#fff2d6;"></div><div class="paw r" style="background:#fff2d6;"></div>
+          <div class="tiny-heart" style="background:#ff4f87;"></div>
+        </div>
+        <div class="cat-text">
+          <div class="t1">Котик №2</div>
+          <div class="t2">Говорит: “если ты улыбаешься — я счастлив”.</div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat">
+          <div class="head" style="background:#dff5ff;">
+            <div class="ear l" style="background:#dff5ff;"></div><div class="ear r" style="background:#dff5ff;"></div>
+            <div class="face">
+              <div class="eye l"></div><div class="eye r"></div>
+              <div class="nose"></div>
+              <div class="whisk w1"></div><div class="whisk w2"></div><div class="whisk w3"></div><div class="whisk w4"></div>
+            </div>
+          </div>
+          <div class="paw l" style="background:#dff5ff;"></div><div class="paw r" style="background:#dff5ff;"></div>
+          <div class="tiny-heart" style="background:#ff2f6b;"></div>
+        </div>
+        <div class="cat-text">
+          <div class="t1">Котик №3</div>
+          <div class="t2">Сторожит твоё сердце и не пускает грусть.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const moreCatsBtn = document.getElementById('moreCatsBtn');
+    const catsContainer = document.getElementById('cats');
+
+    let catIndex = 3;
+
+    const palettes = [
+      { head: '#ffe6ef', heart: '#ff2f6b' },
+      { head: '#fff2d6', heart: '#ff4f87' },
+      { head: '#dff5ff', heart: '#ff2f6b' },
+      { head: '#e7ffe7', heart: '#ff356f' },
+      { head: '#f1e6ff', heart: '#ff2f6b' },
+      { head: '#fff0f6', heart: '#ff4f87' }
+    ];
+
+    const phrases = [
+      'Сохраняю твою улыбку в своём сердечке.',
+      'Мяу-обнимашки уже в пути.',
+      'Если грустно — зови, я рядом.',
+      'Ты прекрасна. Это официально.',
+      'Пусть у нас будет больше тёплых вечеров.',
+      'Люблю тебя сильнее с каждым днём.'
+    ];
+
+    function escapeHtml(str) {
+      return str
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function makeCatCard(i) {
+      const palette = palettes[i % palettes.length];
+      const phrase = phrases[i % phrases.length];
+      const number = ++catIndex;
+
+      const headStyle = `background:${palette.head};`;
+      const earStyle = `background:${palette.head};`;
+      const pawStyle = `background:${palette.head};`;
+      const heartStyle = `background:${palette.heart};`;
+
+      return `
+        <div class="cat-card">
+          <div class="cat">
+            <div class="head" style="${headStyle}">
+              <div class="ear l" style="${earStyle}"></div>
+              <div class="ear r" style="${earStyle}"></div>
+              <div class="face">
+                <div class="eye l"></div><div class="eye r"></div>
+                <div class="nose"></div>
+                <div class="whisk w1"></div><div class="whisk w2"></div>
+                <div class="whisk w3"></div><div class="whisk w4"></div>
+              </div>
+            </div>
+            <div class="paw l" style="${pawStyle}"></div>
+            <div class="paw r" style="${pawStyle}"></div>
+            <div class="tiny-heart" style="${heartStyle}"></div>
+          </div>
+          <div class="cat-text">
+            <div class="t1">Котик №${number}</div>
+            <div class="t2">${escapeHtml(phrase)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function addMoreCats(count = 3) {
+      let html = '';
+      for (let k = 0; k < count; k++) html += makeCatCard(catIndex + k);
+      catsContainer.insertAdjacentHTML('beforeend', html);
+      catsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    moreCatsBtn.addEventListener('click', () => addMoreCats(3));
+  </script>
+</body>
+</html>

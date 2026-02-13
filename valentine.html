@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Моя Валентинка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at top, #ffbfd5, #ff5c8d 40%, #3b0621 100%);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.5);
+            --accent: #ffeb3b;
+            --text-main: #ffffff;
+            --text-secondary: #ffd1e4;
+            --btn-yes: #ff356f;
+
+            --safe-top: env(safe-area-inset-top);
+            --safe-right: env(safe-area-inset-right);
+            --safe-bottom: env(safe-area-inset-bottom);
+            --safe-left: env(safe-area-inset-left);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { height: 100%; }
+        body {
+            min-height: 100dvh; /* iOS-friendly dynamic viewport */
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding:
+              max(20px, var(--safe-top))
+              max(16px, var(--safe-right))
+              max(20px, var(--safe-bottom))
+              max(16px, var(--safe-left));
+
+            overflow-x: hidden;
+            overflow-y: auto; /* чтобы на мобилке всегда можно было скроллить */
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Плавающие сердечки */
+        .hearts {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #ff8fb3;
+            transform: rotate(45deg);
+            animation: floatUp 10s linear infinite;
+            opacity: 0.7;
+        }
+
+        .heart::before, .heart::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #ff8fb3;
+            border-radius: 50%;
+        }
+
+        .heart::before { top: -9px; left: 0; }
+        .heart::after  { left: -9px; top: 0; }
+
+        .heart:nth-child(1) { left: 5%;  animation-duration: 11s; animation-delay: 0s; }
+        .heart:nth-child(2) { left: 20%; animation-duration: 13s; animation-delay: 1s; }
+        .heart:nth-child(3) { left: 35%; animation-duration: 9s;  animation-delay: 2s; }
+        .heart:nth-child(4) { left: 50%; animation-duration: 12s; animation-delay: 0.5s; }
+        .heart:nth-child(5) { left: 65%; animation-duration: 10s; animation-delay: 1.5s; }
+        .heart:nth-child(6) { left: 80%; animation-duration: 14s; animation-delay: 0.8s; }
+        .heart:nth-child(7) { left: 90%; animation-duration: 12s; animation-delay: 2.5s; }
+
+        @keyframes floatUp {
+            0%   { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+            10%  { opacity: 0.8; }
+            100% { transform: translateY(-20vh) rotate(45deg); opacity: 0; }
+        }
+
+        /* Карточка */
+        .card-wrapper { position: relative; z-index: 1; max-width: 420px; width: 100%; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: clamp(24px, 5vw, 36px) 20px 22px;
+            backdrop-filter: blur(18px);
+            box-shadow:
+                0 18px 60px rgba(0,0,0,0.45),
+                0 0 0 1px rgba(255,255,255,0.06);
+            text-align: center;
+        }
+
+        .card-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.16);
+            margin-bottom: clamp(26px, 6vw, 40px);
+        }
+
+        .card-tag-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .big-heart {
+            width: clamp(76px, 22vw, 96px);
+            height: clamp(76px, 22vw, 96px);
+            margin: 0 auto 26px;
+            position: relative;
+            transform: rotate(45deg);
+            background: #ff2f6b;
+            box-shadow:
+                0 0 18px rgba(255, 47, 107, 0.9),
+                0 0 45px rgba(255, 47, 107, 0.6);
+            animation: heartbeat 1.4s ease-in-out infinite;
+        }
+
+        .big-heart::before, .big-heart::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff2f6b;
+            border-radius: 50%;
+        }
+
+        .big-heart::before { top: -50%; left: 0; }
+        .big-heart::after  { left: -50%; top: 0; }
+
+        @keyframes heartbeat {
+            0%, 20%, 60%, 100% { transform: rotate(45deg) scale(1); }
+            30% { transform: rotate(45deg) scale(1.12); }
+            40% { transform: rotate(45deg) scale(0.98); }
+            50% { transform: rotate(45deg) scale(1.15); }
+        }
+
+        h1 { font-size: clamp(22px, 5.6vw, 26px); line-height: 1.15; margin-bottom: 10px; }
+        .subtitle { font-size: clamp(13px, 3.6vw, 15px); color: var(--text-secondary); margin-bottom: 16px; }
+
+        .message-box {
+            border-radius: 18px;
+            padding: 14px 16px 16px;
+            margin-bottom: 18px;
+            background: rgba(0, 0, 0, 0.24);
+            text-align: left;
+            font-size: clamp(13px, 3.4vw, 14px);
+        }
+
+        .message-title { font-weight: 600; margin-bottom: 6px; color: var(--accent); }
+        .message-text { color: var(--text-secondary); }
+
+        .signature { text-align: right; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+        .date { text-align: right; font-size: 12px; opacity: 0.8; }
+
+        .buttons {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: none;
+            padding: 11px 14px; /* чуть выше для удобства на таче */
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            user-select: none;
+            white-space: nowrap;
+            min-height: 44px; /* тач-таргет */
+        }
+
+        .btn-primary {
+            background: var(--btn-yes);
+            color: #fff;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        /* hover только на устройствах с мышью */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            }
+            .btn-secondary:hover {
+                background: rgba(0, 0, 0, 0.22);
+                transform: translateY(-1px);
+            }
+        }
+
+        .btn-emoji { font-size: 16px; }
+        .hint { margin-top: 10px; font-size: 11px; opacity: 0.75; }
+
+        /* На очень узких — кнопки в столбик */
+        @media (max-width: 360px) {
+            .buttons { grid-template-columns: 1fr; }
+        }
+
+        /* Модалка (dialog) — по центру */
+        dialog {
+            position: fixed;
+            inset: 0;
+            margin: auto;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 18px;
+            padding: 16px 16px 14px;
+            width: min(360px, calc(100vw - 32px));
+            background: rgba(30, 10, 20, 0.92);
+            color: #fff;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.6);
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 360px) {
+            .modal-actions { grid-template-columns: 1fr; }
+        }
+
+        .btn-modal-danger {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .btn-modal-back {
+            background: var(--btn-yes);
+            color: #fff;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .btn-modal-danger:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.12); }
+            .btn-modal-back:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6); }
+        }
+
+        /* ========== GLITCH OVERLAY ========== */
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .12s ease;
+        }
+        .glitch-on .glitch-overlay { opacity: 1; }
+
+        .glitch-on {
+            animation: screenShake 0.12s linear infinite;
+            filter: saturate(1.2) contrast(1.15);
+        }
+
+        @keyframes screenShake {
+            0% { transform: translate(0,0) skewX(0deg); }
+            10%{ transform: translate(-2px,1px) skewX(-0.3deg); }
+            20%{ transform: translate(2px,-1px) skewX(0.3deg); }
+            30%{ transform: translate(-4px,2px) skewX(-0.5deg); }
+            40%{ transform: translate(3px,-2px) skewX(0.5deg); }
+            50%{ transform: translate(-2px,2px) skewX(-0.4deg); }
+            60%{ transform: translate(2px,-1px) skewX(0.4deg); }
+            70%{ transform: translate(-3px,1px) skewX(-0.3deg); }
+            80%{ transform: translate(3px,0px) skewX(0.3deg); }
+            90%{ transform: translate(-1px,-2px) skewX(-0.2deg); }
+            100%{ transform: translate(0,0) skewX(0deg); }
+        }
+
+        .glitch-overlay::before,
+        .glitch-overlay::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            mix-blend-mode: screen;
+            opacity: 0.9;
+        }
+
+        .glitch-overlay::before {
+            background:
+                repeating-linear-gradient(
+                    to bottom,
+                    rgba(255,255,255,0.05) 0px,
+                    rgba(255,255,255,0.05) 2px,
+                    rgba(0,0,0,0) 6px,
+                    rgba(0,0,0,0) 10px
+                );
+            animation: scanLines 0.2s linear infinite;
+        }
+
+        @keyframes scanLines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        .glitch-overlay::after{
+            background:
+              radial-gradient(circle at 20% 30%, rgba(255, 0, 128, 0.12), transparent 45%),
+              radial-gradient(circle at 80% 60%, rgba(0, 255, 255, 0.10), transparent 45%),
+              repeating-linear-gradient(90deg,
+                rgba(255,0,0,0.08) 0 2px,
+                rgba(0,255,255,0.08) 2px 4px,
+                rgba(0,0,0,0) 4px 8px);
+            animation: rgbShift 0.16s steps(2) infinite;
+        }
+
+        @keyframes rgbShift {
+            0%   { transform: translate(0,0); filter: blur(0px); }
+            25%  { transform: translate(6px,-2px); filter: blur(0.3px); }
+            50%  { transform: translate(-5px,2px); filter: blur(0.2px); }
+            75%  { transform: translate(4px,1px); filter: blur(0.35px); }
+            100% { transform: translate(0,0); filter: blur(0px); }
+        }
+
+        /* ========== VIDEO OVERLAY ========== */
+        .video-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0,0,0,0.70);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding:
+              max(18px, var(--safe-top))
+              max(14px, var(--safe-right))
+              max(18px, var(--safe-bottom))
+              max(14px, var(--safe-left));
+        }
+
+        .video-overlay.is-open { display: flex; }
+
+        .video-card {
+            width: min(720px, 100%);
+            background: rgba(20, 6, 12, 0.88);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 20px;
+            box-shadow: 0 18px 70px rgba(0,0,0,0.65);
+            padding: 14px;
+        }
+
+        .video-title {
+            text-align: center;
+            font-weight: 800;
+            margin: 6px 0 10px;
+            color: #ffd1e4;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 14px;
+            display: block;
+            background: #000;
+            max-height: min(60vh, 420px);
+        }
+
+        .video-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 360px) {
+            .video-actions { grid-template-columns: 1fr; }
+        }
+
+        .btn-small {
+            padding: 11px 14px;
+            font-size: 14px;
+            min-height: 44px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .glitch-on { animation: none; }
+            .glitch-overlay::before,
+            .glitch-overlay::after { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts">
+        <div class="heart"></div><div class="heart"></div><div class="heart"></div>
+        <div class="heart"></div><div class="heart"></div><div class="heart"></div><div class="heart"></div>
+    </div>
+
+    <div class="card-wrapper">
+        <div class="card">
+            <div class="card-tag">
+                <span class="card-tag-dot"></span>
+                <span>14 февраля</span>
+                <span>•</span>
+                <span>для тебя</span>
+            </div>
+
+            <div class="big-heart"></div>
+
+            <h1>Будешь моей валентинкой?</h1>
+            
+
+            <div class="message-box">
+                <div class="message-title">Моё маленькое признание</div>
+                <div class="message-text">
+                    С тобой каждый день ощущается особенным.
+                    Спасибо за улыбк, поддержку и то тёплое чувство, которое ты даришь просто своим присутствием.
+                </div>
+            </div>
+
+            <div class="signature">Твой бывший((</div>
+            <div class="date">14.02.2026</div>
+
+            <div class="buttons">
+                <a href="love.html" class="btn btn-primary" id="yesBtn">
+                    <span class="btn-emoji">💗</span>
+                    <span>Конечно, да!</span>
+                </a>
+
+                <a href="#no" class="btn btn-secondary" id="noBtn">
+                    <span>Нет</span>
+                </a>
+            </div>
+
+            <div class="hint">Если нажать «Нет», система может “сломаться”…</div>
+        </div>
+    </div>
+
+    <dialog id="noDialog" aria-label="Подтверждение: точно нет">
+        <div class="modal-title">Точно нет 🙁?</div>
+
+        <div class="modal-actions">
+            <button class="btn btn-modal-danger" type="button" id="sureNoBtn">Точно нет</button>
+            <button class="btn btn-modal-back" type="button" id="changedMindBtn">Я передумала</button>
+        </div>
+    </dialog>
+
+    <div class="glitch-overlay" id="glitchOverlay" aria-hidden="true"></div>
+
+    <div class="video-overlay" id="videoOverlay" aria-hidden="true">
+        <div class="video-card">
+            <div class="video-title">Ну вот… грустный котик 😿</div>
+            <video id="sadVideo" controls playsinline preload="metadata">
+                <source src="sad-cat.mp4.mp4" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+
+            <div class="video-actions">
+                <button class="btn btn-secondary btn-small" type="button" id="closeVideoBtn">Закрыть</button>
+                <button class="btn btn-primary btn-small" type="button" id="backToDialogBtn">Вернуться</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const dialog = document.getElementById('noDialog');
+        const sureNoBtn = document.getElementById('sureNoBtn');
+        const changedMindBtn = document.getElementById('changedMindBtn');
+        const yesBtn = document.getElementById('yesBtn');
+
+        const videoOverlay = document.getElementById('videoOverlay');
+        const sadVideo = document.getElementById('sadVideo');
+        const closeVideoBtn = document.getElementById('closeVideoBtn');
+        const backToDialogBtn = document.getElementById('backToDialogBtn');
+
+        let glitchTimer = null;
+
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dialog.showModal();
+        });
+
+        changedMindBtn.addEventListener('click', () => {
+            dialog.close('changed-mind');
+            yesBtn.focus();
+        });
+
+        sureNoBtn.addEventListener('click', () => {
+            dialog.close('sure-no');
+            startGlitchThenVideo();
+        });
+
+        function startGlitchThenVideo() {
+            document.body.classList.add('glitch-on');
+            if (glitchTimer) clearTimeout(glitchTimer);
+
+            glitchTimer = setTimeout(() => {
+                document.body.classList.remove('glitch-on');
+                openVideo();
+            }, 2500);
+        }
+
+        function openVideo() {
+            videoOverlay.classList.add('is-open');
+            videoOverlay.setAttribute('aria-hidden', 'false');
+
+            try { sadVideo.currentTime = 0; } catch (e) {}
+            const p = sadVideo.play();
+            if (p && typeof p.catch === 'function') p.catch(() => {});
+        }
+
+        function closeVideo() {
+            videoOverlay.classList.remove('is-open');
+            videoOverlay.setAttribute('aria-hidden', 'true');
+            try { sadVideo.pause(); } catch (e) {}
+        }
+
+        closeVideoBtn.addEventListener('click', closeVideo);
+
+        backToDialogBtn.addEventListener('click', () => {
+            closeVideo();
+            dialog.showModal();
+        });
+
+        videoOverlay.addEventListener('click', (e) => {
+            if (e.target === videoOverlay) closeVideo();
+        });
+    </script>
+</body>
+</html>
